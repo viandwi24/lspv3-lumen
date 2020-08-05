@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
-class ExampleController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +16,14 @@ class ExampleController extends Controller
      */
     public function index()
     {
-        //
+        $eloquent = Category::query();
+        $response = DataTables::eloquent($eloquent)->make();
+        return $response;
+        return apiResponse(
+            [],
+            '',
+            true
+        );
     }
 
     /**

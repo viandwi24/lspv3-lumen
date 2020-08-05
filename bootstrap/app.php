@@ -59,6 +59,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('datatables');
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Yajra\DataTables\DataTablesServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +112,19 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
+    // all
     require __DIR__.'/../routes/web.php';
+
+    // v1
+    $router->group([
+        'prefix' => 'v1',
+        'namespace' => 'V1'
+    ], function () use ($router) {
+        require __DIR__.'/../routes/v1/web.php';
+        $router->group(['prefix' => 'auth'], function () use ($router) { require __DIR__.'/../routes/v1/auth.php'; });
+        $router->group(['prefix' => 'admin', 'namespace' => 'Admin'], function () use ($router) { require __DIR__.'/../routes/v1/admin.php'; });
+        $router->group(['prefix' => 'asesi', 'namespace' => 'Asesi'], function () use ($router) { require __DIR__.'/../routes/v1/asesi.php'; });
+    });
 });
 
 return $app;
