@@ -21,5 +21,13 @@ class UsersSeeder extends Seeder
             'role'      => 'Asesi',
             'status'    => 'Active'
         ]);
+        User::create([
+            'name'      => 'Admin LSP',
+            'email'     => 'admin@mail.com',
+            'username'  => 'admin',
+            'password'  => Hash::make('password'),
+            'role'      => 'Admin',
+            'status'    => 'Active'
+        ]);
     }
 }
