@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Yajra\DataTables\CollectionDataTable;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Facades\DataTables;
 
 if (!function_exists('apiResource'))
 {
@@ -42,3 +45,28 @@ if (!function_exists('apiResource'))
                 ->header('Accept', 'application/json');
     }
 }
+
+if (!function_exists('apiDataTablesResponse'))
+{
+    function apiDataTablesResponse($data, $extCallback = null)
+    {
+        $datatables = DataTables::of($data);
+        if ($extCallback != null && is_callable($extCallback))
+        {
+            $result = $extCallback($datatables);
+            if (
+                ($result instanceof EloquentDataTable) or
+                ($result instanceof CollectionDataTable)
+            ) {
+                $datatables = $result;
+            }
+        }
+        
+        // 
+        $builder = $datatables->make();
+        $content = $builder->getOriginalContent();
+
+        // 
+        return $content;
+    } 
+};

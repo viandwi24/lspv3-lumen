@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin;
 
+use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -16,12 +18,22 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        // 
         $eloquent = Category::query();
-        $response = DataTables::eloquent($eloquent)->make();
+        $response = (new DataTable)->of($eloquent)->make();
         return $response;
+
+        $data = apiDataTablesResponse(
+            $eloquent, 
+            function ($q) {
+                return $q->addColumn('tes', function () {
+                    return "awekoawekoawe";
+                });
+            }
+        );
         return apiResponse(
-            [],
-            '',
+            $data,
+            'h3h3h3',
             true
         );
     }

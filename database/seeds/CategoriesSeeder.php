@@ -12,9 +12,11 @@ class CategoriesSeeder extends Seeder
      */
     public function run()
     {
-        Category::create([
-            'name' => 'Example Category',
-            'description' => 'This is a description of example category.'
-        ]);
+        for ($i=0; $i < 30; $i++) { 
+            Category::create([
+                'name' => "Example Category {$i}",
+                'description' => "{$i} This is a description of example category."
+            ]);
+        }
     }
 }
