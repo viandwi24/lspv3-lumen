@@ -20,7 +20,18 @@ class CategoryController extends Controller
     {
         // 
         $eloquent = Category::query();
-        $response = (new DataTable)->of($eloquent)->make();
+        $response = (new DataTable)
+            ->of($eloquent)
+            ->columnFilter('name', function ($query, $data) {
+                return $query->where('name', 'LIKE', "%{$data}%");
+            })
+            ->columnFilter('description', function ($query, $data) {
+                return $query->where('description', $data);
+            })
+            ->addColumn('created_at', function (Category $category) {
+                return $category->created_at->format('Y-m-d');
+            })
+            ->make();
         return $response;
 
         $data = apiDataTablesResponse(
