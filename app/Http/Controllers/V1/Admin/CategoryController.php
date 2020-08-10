@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -22,15 +23,6 @@ class CategoryController extends Controller
         $eloquent = Category::query();
         $response = (new DataTable)
             ->of($eloquent)
-            ->columnFilter('name', function ($query, $data) {
-                return $query->where('name', 'LIKE', "%{$data}%");
-            })
-            ->columnFilter('description', function ($query, $data) {
-                return $query->where('description', $data);
-            })
-            ->addColumn('created_at', function (Category $category) {
-                return $category->created_at->format('Y-m-d');
-            })
             ->make();
         return $response;
 
@@ -44,19 +36,9 @@ class CategoryController extends Controller
         );
         return apiResponse(
             $data,
-            'h3h3h3',
+            'get data success.',
             true
         );
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -67,7 +49,34 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // make validator
+        $validator = Validator::make($request->all(), ([
+            'name' => 'required|string|min:3',
+            'description' => 'required|string|min:3'
+        ]));
+
+        // validate fails
+        if ($validator->fails()) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $validator->errors(),
+            422
+        );
+
+        // 
+        $created = null;
+        DB::transaction(function () use ($request, &$created) {
+            Category::create($request->only('name', 'description'));
+        });
+
+        // 
+        return apiResponse(
+            $created,
+            'get data success.',
+            true
+        );
     }
 
     /**
@@ -77,17 +86,6 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }
