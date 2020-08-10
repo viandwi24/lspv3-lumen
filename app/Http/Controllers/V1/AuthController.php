@@ -61,7 +61,7 @@ class AuthController extends Controller
             $request->all(),
             "Validation Fails.",
             false,
-            'auth.login.validation',
+            'validation.fails',
             $validator->errors(),
             422
         );
@@ -121,7 +121,7 @@ class AuthController extends Controller
             $request->all(),
             "Validation Fails.",
             false,
-            'auth.register.validation',
+            'validation.fails',
             $validator->errors(),
             422
         );

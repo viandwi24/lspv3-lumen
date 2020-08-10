@@ -68,7 +68,7 @@ class CategoryController extends Controller
         // 
         $created = null;
         DB::transaction(function () use ($request, &$created) {
-            Category::create($request->only('name', 'description'));
+            $created = Category::create($request->only('name', 'description'));
         });
 
         // 
@@ -99,7 +99,37 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // make validator
+        $validator = Validator::make($request->all(), ([
+            'name' => 'required|string|min:3|max:30',
+            'description' => 'required|string|min:3'
+        ]));
+
+        // validate fails
+        if ($validator->fails()) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $validator->errors(),
+            422
+        );
+
+        // 
+        $category = Category::findOrFail($id);
+
+        // 
+        $update = null;
+        DB::transaction(function () use ($request, $category, &$update) {
+            $update = $category->update($request->only('name', 'description'));
+        });
+
+        // 
+        return apiResponse(
+            $category,
+            'update data success.',
+            true
+        );
     }
 
     /**
@@ -110,6 +140,17 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ids = explode(',', $id);
+        $categories = Category::findOrFail($ids);
+        $destroy = $categories->each(function ($category, $key) {
+            $category->delete();
+        });
+
+        // 
+        return apiResponse(
+            $categories->pluck('id'),
+            'delete data success.',
+            true
+        );
     }
 }
