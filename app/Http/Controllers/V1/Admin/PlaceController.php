@@ -4,13 +4,13 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class CategoryController extends Controller
+class PlaceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,19 +20,14 @@ class CategoryController extends Controller
     public function index()
     {
         // 
-        $eloquent = Category::query();
+        $eloquent = Place::query();
         $response = (new DataTable)
             ->of($eloquent)
             ->make();
         return $response;
 
         $data = apiDataTablesResponse(
-            $eloquent, 
-            function ($q) {
-                return $q->addColumn('tes', function () {
-                    return "awekoawekoawe";
-                });
-            }
+            $eloquent
         );
         return apiResponse(
             $data,
@@ -52,7 +47,8 @@ class CategoryController extends Controller
         // make validator
         $validator = Validator::make($request->all(), ([
             'name' => 'required|string|min:2|max:30',
-            'description' => 'required|string|min:3|max:255'
+            'address' => 'required|string|min:3|max:255',
+            'phone' => 'required|string|min:12|max:13'
         ]));
 
         // validate fails
@@ -68,7 +64,7 @@ class CategoryController extends Controller
         // 
         $created = null;
         DB::transaction(function () use ($request, &$created) {
-            $created = Category::create($request->only('name', 'description'));
+            $created = Place::create($request->only('name', 'address', 'phone'));
         });
 
         // 
@@ -102,7 +98,8 @@ class CategoryController extends Controller
         // make validator
         $validator = Validator::make($request->all(), ([
             'name' => 'required|string|min:2|max:30',
-            'description' => 'required|string|min:3|max:255'
+            'address' => 'required|string|min:3|max:255',
+            'phone' => 'required|string|min:12|max:13'
         ]));
 
         // validate fails
@@ -116,17 +113,17 @@ class CategoryController extends Controller
         );
 
         // 
-        $category = Category::findOrFail($id);
+        $place = Place::findOrFail($id);
 
         // 
         $update = null;
-        DB::transaction(function () use ($request, $category, &$update) {
-            $update = $category->update($request->only('name', 'description'));
+        DB::transaction(function () use ($request, $place, &$update) {
+            $update = $place->update($request->only('name', 'address', 'phone'));
         });
 
         // 
         return apiResponse(
-            $category,
+            $place,
             'update data success.',
             true
         );
@@ -141,14 +138,14 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $categories = Category::findOrFail($ids);
-        $destroy = $categories->each(function ($category, $key) {
-            $category->delete();
+        $places = Place::findOrFail($ids);
+        $destroy = $places->each(function ($place, $key) {
+            $place->delete();
         });
 
         // 
         return apiResponse(
-            $categories->pluck('id'),
+            $places->pluck('id'),
             'delete data success.',
             true
         );
