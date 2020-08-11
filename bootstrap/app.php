@@ -78,6 +78,7 @@ $app->middleware([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'role' => App\Http\Middleware\RoleMiddleware::class,
 ]);
 
 /*
@@ -122,7 +123,7 @@ $app->router->group([
     ], function () use ($router) {
         require __DIR__.'/../routes/v1/web.php';
         $router->group(['prefix' => 'auth'], function () use ($router) { require __DIR__.'/../routes/v1/auth.php'; });
-        $router->group(['prefix' => 'admin', 'namespace' => 'Admin'], function () use ($router) { require __DIR__.'/../routes/v1/admin.php'; });
+        $router->group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['auth', 'role:admin']], function () use ($router) { require __DIR__.'/../routes/v1/admin.php'; });
         $router->group(['prefix' => 'asesi', 'namespace' => 'Asesi'], function () use ($router) { require __DIR__.'/../routes/v1/asesi.php'; });
     });
 });
