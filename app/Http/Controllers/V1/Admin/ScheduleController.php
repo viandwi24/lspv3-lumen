@@ -142,14 +142,14 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $places = Place::findOrFail($ids);
-        $destroy = $places->each(function ($place, $key) {
-            $place->delete();
+        $schedules = Schedule::findOrFail($ids);
+        $destroy = $schedules->each(function ($schedule, $key) {
+            $schedule->delete();
         });
 
         // 
         return apiResponse(
-            $places->pluck('id'),
+            $schedules->pluck('id'),
             'delete data success.',
             true
         );
