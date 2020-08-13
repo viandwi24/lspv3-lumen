@@ -17,3 +17,12 @@ $router->group(['prefix' => '/places'], function() use ($router) {
     $router->get('/{id}/edit', ['as' => 'places.edit', 'uses' => 'PlaceController@edit']);
     $router->delete('/{id}', ['as' => 'places.destroy', 'uses' => 'PlaceController@destroy']);
 });
+
+$router->group(['prefix' => '/schedules'], function() use ($router) {
+    $router->get('/', ['as' => 'schedules.index', 'uses' => 'ScheduleController@index']);
+    $router->post('/', ['as' => 'schedules.store', 'uses' => 'ScheduleController@store']);
+    $router->get('/{id}', ['as' => 'schedules.show', 'uses' => 'ScheduleController@show']);
+    $router->put('/{id}', ['as' => 'schedules.update', 'uses' => 'ScheduleController@update']);
+    $router->get('/{id}/edit', ['as' => 'schedules.edit', 'uses' => 'ScheduleController@edit']);
+    $router->delete('/{id}', ['as' => 'schedules.destroy', 'uses' => 'ScheduleController@destroy']);
+});
