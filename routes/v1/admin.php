@@ -26,3 +26,12 @@ $router->group(['prefix' => '/schedules'], function() use ($router) {
     $router->get('/{id}/edit', ['as' => 'schedules.edit', 'uses' => 'ScheduleController@edit']);
     $router->delete('/{id}', ['as' => 'schedules.destroy', 'uses' => 'ScheduleController@destroy']);
 });
+
+$router->group(['prefix' => '/schemas'], function() use ($router) {
+    $router->get('/', ['as' => 'schemas.index', 'uses' => 'SchemaController@index']);
+    $router->post('/', ['as' => 'schemas.store', 'uses' => 'SchemaController@store']);
+    $router->get('/{id}', ['as' => 'schemas.show', 'uses' => 'SchemaController@show']);
+    $router->put('/{id}', ['as' => 'schemas.update', 'uses' => 'SchemaController@update']);
+    $router->get('/{id}/edit', ['as' => 'schemas.edit', 'uses' => 'SchemaController@edit']);
+    $router->delete('/{id}', ['as' => 'schemas.destroy', 'uses' => 'SchemaController@destroy']);
+});

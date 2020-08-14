@@ -4,12 +4,12 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Schedule;
+use App\Models\Schema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class ScheduleController extends Controller
+class SchemaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,12 +19,9 @@ class ScheduleController extends Controller
     public function index()
     {
         // 
-        $eloquent = Schedule::query();
+        $eloquent = Schema::query();
         $response = (new DataTable)
             ->of($eloquent)
-            ->addColumn('date', function (Schedule $schedule) {
-                return $schedule->date->format('d-m-Y');
-            })
             ->make();
         return $response;
 
@@ -48,10 +45,9 @@ class ScheduleController extends Controller
     {
         // make validator
         $validator = Validator::make($request->all(), ([
-            'name' => 'required|string|min:2|max:30',
-            'date' => 'required|string|date',
-            'announcement' => 'nullable|string',
-            'agenda' => 'required|array',
+            'title' => 'required|string|min:3|max:255',
+            'code' => 'required|string|min:3|max:255',
+            'description' => 'required|string|min:3',
         ]));
 
         // validate fails
@@ -67,7 +63,7 @@ class ScheduleController extends Controller
         // 
         $created = null;
         DB::transaction(function () use ($request, &$created) {
-            $created = Schedule::create($request->only('name', 'date', 'announcement', 'agenda'));
+            $created = Schema::create($request->only('title', 'code', 'description'));
         });
 
         // 
@@ -99,12 +95,10 @@ class ScheduleController extends Controller
     public function update(Request $request, $id)
     {
         // make validator
-        // return $request->all();
         $validator = Validator::make($request->all(), ([
             'name' => 'required|string|min:2|max:30',
-            'date' => 'required|string|date',
-            'announcement' => 'nullable|string',
-            'agenda' => 'required|array',
+            'address' => 'required|string|min:3|max:255',
+            'phone' => 'required|string|min:12|max:13'
         ]));
 
         // validate fails
@@ -118,12 +112,12 @@ class ScheduleController extends Controller
         );
 
         // 
-        $place = Schedule::findOrFail($id);
+        $place = Place::findOrFail($id);
 
         // 
         $update = null;
         DB::transaction(function () use ($request, $place, &$update) {
-            $update = $place->update($request->only('name', 'date', 'announcement', 'agenda'));
+            $update = $place->update($request->only('name', 'address', 'phone'));
         });
 
         // 
@@ -143,14 +137,14 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $schedules = Schedule::findOrFail($ids);
-        $destroy = $schedules->each(function ($schedule, $key) {
-            $schedule->delete();
+        $places = Place::findOrFail($ids);
+        $destroy = $places->each(function ($place, $key) {
+            $place->delete();
         });
 
         // 
         return apiResponse(
-            $schedules->pluck('id'),
+            $places->pluck('id'),
             'delete data success.',
             true
         );
