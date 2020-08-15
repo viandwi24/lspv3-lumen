@@ -82,7 +82,12 @@ class SchemaController extends Controller
      */
     public function show($id)
     {
-        //
+        $schema = Schema::findOrFail($id);
+        return apiResponse(
+            $schema,
+            'get data success.',
+            true
+        );
     }
 
     /**
