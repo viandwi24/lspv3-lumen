@@ -142,14 +142,14 @@ class SchemaController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $places = Place::findOrFail($ids);
-        $destroy = $places->each(function ($place, $key) {
-            $place->delete();
+        $schemas = Schema::findOrFail($ids);
+        $destroy = $schemas->each(function ($schema, $key) {
+            $schema->delete();
         });
 
         // 
         return apiResponse(
-            $places->pluck('id'),
+            $schemas->pluck('id'),
             'delete data success.',
             true
         );
