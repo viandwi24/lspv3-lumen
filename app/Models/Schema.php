@@ -9,4 +9,9 @@ class Schema extends Model
     protected $fillable = [
         'title', 'description', 'code', 'status'
     ];
+
+    public function competency_units ()
+    {
+        return $this->hasMany(CompetencyUnit::class);
+    }
 }
