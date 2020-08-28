@@ -4,22 +4,22 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Schema;
+use App\Models\WorkElement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class SchemaController extends Controller
+class WorkElementController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($competency_unit_id)
     {
         // 
-        $eloquent = Schema::query();
+        $eloquent = WorkElement::where('competency_unit_id', $competency_unit_id);
         $response = (new DataTable)
             ->of($eloquent)
             ->make();
@@ -41,13 +41,11 @@ class SchemaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $competency_unit_id)
     {
         // make validator
         $validator = Validator::make($request->all(), ([
-            'title' => 'required|string|min:3|max:255',
-            'code' => 'required|string|min:3|max:255',
-            'description' => 'required|string|min:3',
+            'title' => 'required|string|min:3|max:255'
         ]));
 
         // validate fails
@@ -62,8 +60,13 @@ class SchemaController extends Controller
 
         // 
         $created = null;
-        DB::transaction(function () use ($request, &$created) {
-            $created = Schema::create($request->only('title', 'code', 'description'));
+        DB::transaction(function () use ($request, $competency_unit_id, &$created) {
+            $created = WorkElement::create(
+                array_merge(
+                    $request->only('title'),
+                    ['competency_unit_id' => $competency_unit_id]
+                )
+            );
         });
 
         // 
@@ -82,9 +85,9 @@ class SchemaController extends Controller
      */
     public function show($id)
     {
-        $schema = Schema::findOrFail($id);
+        $work_element = WorkElement::findOrFail($id);
         return apiResponse(
-            $schema,
+            $work_element,
             'get data success.',
             true
         );
@@ -101,9 +104,7 @@ class SchemaController extends Controller
     {
         // make validator
         $validator = Validator::make($request->all(), ([
-            'title' => 'required|string|min:3|max:255',
-            'code' => 'required|string|min:3|max:255',
-            'description' => 'required|string|min:3',
+            'title' => 'required|string|min:3|max:255'
         ]));
 
         // validate fails
@@ -117,17 +118,17 @@ class SchemaController extends Controller
         );
 
         // 
-        $schema = Schema::findOrFail($id);
+        $workElement = WorkElement::findOrFail($id);
 
         // 
         $update = null;
-        DB::transaction(function () use ($request, $schema, &$update) {
-            $update = $schema->update($request->only('title', 'code', 'description'));
+        DB::transaction(function () use ($request, $workElement, &$update) {
+            $update = $workElement->update($request->only('title'));
         });
 
         // 
         return apiResponse(
-            $schema,
+            $workElement,
             'update data success.',
             true
         );
@@ -142,14 +143,14 @@ class SchemaController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $schemas = Schema::findOrFail($ids);
-        $destroy = $schemas->each(function ($schema, $key) {
-            $schema->delete();
+        $workElements = WorkElement::findOrFail($ids);
+        $destroy = $workElements->each(function ($workElement, $key) {
+            $workElement->delete();
         });
 
         // 
         return apiResponse(
-            $schemas->pluck('id'),
+            $workElements->pluck('id'),
             'delete data success.',
             true
         );

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CompetencyUnit extends Model
 {
     protected $fillable = [
-        'title', 'standart_type', 'code'
+        'schema_id', 'title', 'standard_type', 'code'
     ];
 
     public function schema()

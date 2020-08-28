@@ -4,22 +4,23 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Schema;
+use App\Models\CompetencyUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\VarDumper\VarDumper;
 
-class SchemaController extends Controller
+class CompetencyUnitController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($schema_id)
     {
         // 
-        $eloquent = Schema::query();
+        $eloquent = CompetencyUnit::where('schema_id', $schema_id);
         $response = (new DataTable)
             ->of($eloquent)
             ->make();
@@ -41,13 +42,13 @@ class SchemaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $schema_id)
     {
         // make validator
         $validator = Validator::make($request->all(), ([
+            'code' => 'required|string|min:2|max:30',
             'title' => 'required|string|min:3|max:255',
-            'code' => 'required|string|min:3|max:255',
-            'description' => 'required|string|min:3',
+            'standard_type' => 'required|string|min:3|max:255'
         ]));
 
         // validate fails
@@ -62,8 +63,13 @@ class SchemaController extends Controller
 
         // 
         $created = null;
-        DB::transaction(function () use ($request, &$created) {
-            $created = Schema::create($request->only('title', 'code', 'description'));
+        DB::transaction(function () use ($request, $schema_id, &$created) {
+            $created = CompetencyUnit::create(
+                array_merge(
+                    $request->only('code', 'title', 'standard_type'),
+                    [ 'schema_id' => $schema_id ]   
+                )
+            );
         });
 
         // 
@@ -82,9 +88,9 @@ class SchemaController extends Controller
      */
     public function show($id)
     {
-        $schema = Schema::findOrFail($id);
+        $competency_unit = CompetencyUnit::findOrFail($id);
         return apiResponse(
-            $schema,
+            $competency_unit,
             'get data success.',
             true
         );
@@ -101,9 +107,9 @@ class SchemaController extends Controller
     {
         // make validator
         $validator = Validator::make($request->all(), ([
+            'code' => 'required|string|min:2|max:30',
             'title' => 'required|string|min:3|max:255',
-            'code' => 'required|string|min:3|max:255',
-            'description' => 'required|string|min:3',
+            'standard_type' => 'required|string|min:3|max:255'
         ]));
 
         // validate fails
@@ -117,17 +123,17 @@ class SchemaController extends Controller
         );
 
         // 
-        $schema = Schema::findOrFail($id);
+        $competency_unit = CompetencyUnit::findOrFail($id);
 
         // 
         $update = null;
-        DB::transaction(function () use ($request, $schema, &$update) {
-            $update = $schema->update($request->only('title', 'code', 'description'));
+        DB::transaction(function () use ($request, $competency_unit, &$update) {
+            $update = $competency_unit->update($request->only('code', 'title', 'standard_type'));
         });
 
         // 
         return apiResponse(
-            $schema,
+            $competency_unit,
             'update data success.',
             true
         );
@@ -142,14 +148,14 @@ class SchemaController extends Controller
     public function destroy($id)
     {
         $ids = explode(',', $id);
-        $schemas = Schema::findOrFail($ids);
-        $destroy = $schemas->each(function ($schema, $key) {
-            $schema->delete();
+        $competency_units = CompetencyUnit::findOrFail($ids);
+        $destroy = $competency_units->each(function ($competency_unit, $key) {
+            $competency_unit->delete();
         });
 
         // 
         return apiResponse(
-            $schemas->pluck('id'),
+            $competency_units->pluck('id'),
             'delete data success.',
             true
         );
