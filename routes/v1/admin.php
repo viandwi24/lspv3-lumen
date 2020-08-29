@@ -37,6 +37,7 @@ $router->group(['prefix' => '/schemas'], function() use ($router) {
     
     // 
     $router->group(['prefix' => '/{schema_id}/competency-units'], function() use ($router) {
+        $router->get('/full', ['as' => 'competency_units.index', 'uses' => 'CompetencyUnitController@full']);
         $router->get('/', ['as' => 'competency_units.index', 'uses' => 'CompetencyUnitController@index']);
         $router->post('/', ['as' => 'competency_units.store', 'uses' => 'CompetencyUnitController@store']);
         $router->get('/{id}', ['as' => 'competency_units.show', 'uses' => 'CompetencyUnitController@show']);

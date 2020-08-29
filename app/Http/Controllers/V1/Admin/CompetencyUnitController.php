@@ -17,6 +17,31 @@ class CompetencyUnitController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function full($schema_id)
+    {
+        // 
+        $eloquent = CompetencyUnit::with('work_elements', 'work_elements.job_criterias')
+            ->where('schema_id', $schema_id);
+        $response = (new DataTable)
+            ->of($eloquent)
+            ->make();
+        return $response;
+
+        $data = apiDataTablesResponse(
+            $eloquent
+        );
+        return apiResponse(
+            $data,
+            'get data success.',
+            true
+        );
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index($schema_id)
     {
         // 
