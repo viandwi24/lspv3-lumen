@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 40)->unique();
             $table->string('password', 128);
             $table->enum('status', ['Active','Inactive','Suspended'])->default('Active');
-            $table->enum('role', ['Admin','Superadmin','Asesor', 'Asesi'])->default('Asesi');
+            $table->enum('role', ['Admin','Superadmin','Assessor', 'Accession'])->default('Accession');
             $table->dateTime('last_login')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();

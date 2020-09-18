@@ -18,7 +18,7 @@ class UsersSeeder extends Seeder
             'email'     => 'viandwicyber@gmail.com',
             'username'  => 'viandwi24',
             'password'  => Hash::make('password'),
-            'role'      => 'Asesi',
+            'role'      => 'Accession',
             'status'    => 'Active'
         ]);
         User::create([

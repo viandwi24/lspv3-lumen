@@ -66,3 +66,21 @@ $router->group(['prefix' => '/schemas'], function() use ($router) {
         });
     });
 });
+
+$router->group(['prefix' => '/accessions'], function() use ($router) {
+    $router->get('/', ['as' => 'accession.index', 'uses' => 'AccessionController@index']);
+    $router->post('/', ['as' => 'accession.store', 'uses' => 'AccessionController@store']);
+    $router->get('/{id}', ['as' => 'accession.show', 'uses' => 'AccessionController@show']);
+    $router->put('/{id}', ['as' => 'accession.update', 'uses' => 'AccessionController@update']);
+    $router->get('/{id}/edit', ['as' => 'accession.edit', 'uses' => 'AccessionController@edit']);
+    $router->delete('/{id}', ['as' => 'accession.destroy', 'uses' => 'AccessionController@destroy']);
+});
+
+$router->group(['prefix' => '/assessors'], function() use ($router) {
+    $router->get('/', ['as' => 'assessor.index', 'uses' => 'AssessorController@index']);
+    $router->post('/', ['as' => 'assessor.store', 'uses' => 'AssessorController@store']);
+    $router->get('/{id}', ['as' => 'assessor.show', 'uses' => 'AssessorController@show']);
+    $router->put('/{id}', ['as' => 'assessor.update', 'uses' => 'AssessorController@update']);
+    $router->get('/{id}/edit', ['as' => 'assessor.edit', 'uses' => 'AssessorController@edit']);
+    $router->delete('/{id}', ['as' => 'assessor.destroy', 'uses' => 'AssessorController@destroy']);
+});
