@@ -10,8 +10,18 @@ class Schema extends Model
         'title', 'description', 'code', 'status'
     ];
 
-    public function competency_units ()
+    public function competency_units()
     {
         return $this->hasMany(CompetencyUnit::class);
+    }
+
+    public function assessors()
+    {
+        return $this->belongsToMany(User::class, 'schema_assessors');
+    }
+
+    public function places()
+    {
+        return $this->belongsToMany(Place::class, 'schema_places');
     }
 }

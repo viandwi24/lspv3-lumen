@@ -22,6 +22,22 @@ class UsersSeeder extends Seeder
             'status'    => 'Active'
         ]);
         User::create([
+            'name'      => 'Example Assessors 1',
+            'email'     => 'assessor1@gmail.com',
+            'username'  => 'assessor1',
+            'password'  => Hash::make('password'),
+            'role'      => 'Assessor',
+            'status'    => 'Active'
+        ]);
+        User::create([
+            'name'      => 'Example Assessors 2',
+            'email'     => 'assessor2@gmail.com',
+            'username'  => 'assessor2',
+            'password'  => Hash::make('password'),
+            'role'      => 'Assessor',
+            'status'    => 'Active'
+        ]);
+        User::create([
             'name'      => 'Admin LSP',
             'email'     => 'admin@mail.com',
             'username'  => 'admin',

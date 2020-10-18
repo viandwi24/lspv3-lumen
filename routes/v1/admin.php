@@ -35,7 +35,29 @@ $router->group(['prefix' => '/schemas'], function() use ($router) {
     $router->get('/{id}/edit', ['as' => 'schemas.edit', 'uses' => 'SchemaController@edit']);
     $router->delete('/{id}', ['as' => 'schemas.destroy', 'uses' => 'SchemaController@destroy']);
     
-    // 
+    // menu schema
+    $router->group(['prefix' => '/{schema_id}', 'namespace' => 'Schema'], function() use ($router) {
+        // asesi
+        $router->group(['prefix' => '/accessions'], function() use ($router) {
+            $router->get('/', ['as' => 'accessions.index', 'uses' => 'AccessionController@index']);
+            $router->post('/', ['as' => 'accessions.store', 'uses' => 'AccessionController@store']);
+            $router->delete('/{id}', ['as' => 'accessions.destroy', 'uses' => 'AccessionController@destroy']);
+        });
+        // asesor
+        $router->group(['prefix' => '/assessors'], function() use ($router) {
+            $router->get('/', ['as' => 'assessors.index', 'uses' => 'AssessorController@index']);
+            $router->post('/', ['as' => 'assessors.store', 'uses' => 'AssessorController@store']);
+            $router->delete('/{id}', ['as' => 'assessors.destroy', 'uses' => 'AssessorController@destroy']);
+        });
+        // place
+        $router->group(['prefix' => '/places'], function() use ($router) {
+            $router->get('/', ['as' => 'places.index', 'uses' => 'PlaceController@index']);
+            $router->post('/', ['as' => 'places.store', 'uses' => 'PlaceController@store']);
+            $router->delete('/{id}', ['as' => 'places.destroy', 'uses' => 'PlaceController@destroy']);
+        });
+    });
+    
+    // competency unit
     $router->group(['prefix' => '/{schema_id}/competency-units'], function() use ($router) {
         $router->get('/full', ['as' => 'competency_units.index', 'uses' => 'CompetencyUnitController@full']);
         $router->get('/', ['as' => 'competency_units.index', 'uses' => 'CompetencyUnitController@index']);

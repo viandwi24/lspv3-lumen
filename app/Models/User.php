@@ -60,4 +60,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return [];
     }
+
+
+    // 
+    public function schemas()
+    {
+        return $this->belongsToMany(Schema::class);
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 
 class DataTable {
@@ -39,6 +41,7 @@ class DataTable {
         // 
         $eloquent = null;
         if ($this->source instanceof \Illuminate\Database\Eloquent\Builder) $eloquent = $this->source;
+        if ($this->source instanceof \Illuminate\Database\Eloquent\Relations\Relation) $eloquent = $this->source;
 
         // 
         if ($eloquent == null) return $this->makeResponse([
