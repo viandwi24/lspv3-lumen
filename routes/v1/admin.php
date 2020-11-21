@@ -55,6 +55,12 @@ $router->group(['prefix' => '/schemas'], function() use ($router) {
             $router->post('/', ['as' => 'places.store', 'uses' => 'PlaceController@store']);
             $router->delete('/{id}', ['as' => 'places.destroy', 'uses' => 'PlaceController@destroy']);
         });
+        // schedule
+        $router->group(['prefix' => '/schedules'], function() use ($router) {
+            $router->get('/', ['as' => 'schedules.index', 'uses' => 'ScheduleController@index']);
+            $router->post('/', ['as' => 'schedules.store', 'uses' => 'ScheduleController@store']);
+            $router->delete('/{id}', ['as' => 'schedules.destroy', 'uses' => 'ScheduleController@destroy']);
+        });
     });
     
     // competency unit

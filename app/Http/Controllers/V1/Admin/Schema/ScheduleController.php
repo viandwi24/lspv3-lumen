@@ -4,14 +4,16 @@ namespace App\Http\Controllers\V1\Admin\Schema;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
+use App\Models\Place;
+use App\Models\Schedule;
 use App\Models\Schema;
-use App\Models\SchemaAssessor;
+use App\Models\SchemaSchedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class AssessorController extends Controller
+class ScheduleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,10 +27,10 @@ class AssessorController extends Controller
         if (!$schema) return abort(404);
 
         // 
-        $eloquent = $schema->assessors();
+        $eloquent = $schema->schedules();
 
         // 
-        if (isset($_GET['add'])) $eloquent = User::where('role', 'Assessor')->whereNotIn('id', $eloquent->get()->pluck('id'));
+        if (isset($_GET['add'])) $eloquent = Schedule::whereNotIn('id', $eloquent->get()->pluck('id'));
 
         // 
         $response = (new DataTable)
@@ -52,7 +54,7 @@ class AssessorController extends Controller
     {
         // make validator
         $validator = Validator::make($request->all() ,[
-            'assessor_id' => 'required|integer'
+            'schedule_id' => 'required|integer'
         ]);
 
         // validate fails
@@ -66,15 +68,7 @@ class AssessorController extends Controller
         );
 
         // 
-        $user = User::findOrFail($request->assessor_id);
-        if ($user->role != 'Assessor') return apiResponse(
-            $request->all(),
-            "Validation Fails.",
-            false,
-            'validation.fails',
-            ['assessor' => ["cannt added user because, not assessor."]],
-            422
-        );
+        $schedule = Schedule::findOrFail($request->schedule_id);
         
         // 
         $schema = Schema::findOrFail($schema_id);
@@ -82,9 +76,9 @@ class AssessorController extends Controller
         // 
         $created = null;
         DB::transaction(function () use ($schema, $request, &$created) {
-            $created = SchemaAssessor::create([
+            $created = SchemaSchedule::create([
                 'schema_id' => $schema->id,
-                'user_id' => $request->assessor_id
+                'schedule_id' => $request->schedule_id
             ]);
         });
 
@@ -105,16 +99,17 @@ class AssessorController extends Controller
     public function destroy($schema_id, $id)
     {
         $ids = explode(',', $id);
-        $schema_assesors = SchemaAssessor::where('schema_id', $schema_id)->whereIn('user_id', $ids)->get();
-        $destroy = $schema_assesors->each(function ($schema_assesor, $key) {
-            $schema_assesor->delete();
+        $schema_schedules = SchemaSchedule::where('schema_id', $schema_id)->whereIn('schedule_id', $ids)->get();
+        $destroy = $schema_schedules->each(function ($schema_schedule, $key) {
+            $schema_schedule->delete();
         });
 
         // 
         return apiResponse(
-            $schema_assesors->pluck('id'),
+            $schema_schedules->pluck('id'),
             'delete data success.',
             true
         );
     }
 }
+

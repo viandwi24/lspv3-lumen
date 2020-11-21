@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Schema;
+namespace App\Http\Controllers\V1\Accession;
 
+use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
+use App\Models\Schema;
 use Illuminate\Http\Request;
 
-class AccessionController extends Controller
+class SchemaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         // 
-        $eloquent = User::query();
+        $eloquent = Schema::query();
         $response = (new DataTable)
             ->of($eloquent)
             ->make();

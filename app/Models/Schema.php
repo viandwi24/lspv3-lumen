@@ -24,4 +24,9 @@ class Schema extends Model
     {
         return $this->belongsToMany(Place::class, 'schema_places');
     }
+
+    public function schedules()
+    {
+        return $this->belongsToMany(Schedule::class, 'schema_schedules');
+    }
 }

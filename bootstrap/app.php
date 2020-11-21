@@ -126,7 +126,7 @@ $app->router->group([
         $router->group(['prefix' => 'admin', 'namespace' => 'Admin',
             // 'middleware' => ['auth', 'role:admin']
         ], function () use ($router) { require __DIR__.'/../routes/v1/admin.php'; });
-        $router->group(['prefix' => 'asesi', 'namespace' => 'Asesi'], function () use ($router) { require __DIR__.'/../routes/v1/asesi.php'; });
+        $router->group(['prefix' => 'accession', 'namespace' => 'Accession'], function () use ($router) { require __DIR__.'/../routes/v1/accession.php'; });
     });
 });
 
