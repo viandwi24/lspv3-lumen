@@ -82,7 +82,7 @@ class SchemaController extends Controller
      */
     public function show($id)
     {
-        $schema = Schema::findOrFail($id);
+        $schema = Schema::with('competency_units', 'competency_units.work_elements', 'competency_units.work_elements.job_criterias')->findOrFail($id);
         return apiResponse(
             $schema,
             'get data success.',
