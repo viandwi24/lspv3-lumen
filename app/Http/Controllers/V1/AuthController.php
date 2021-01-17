@@ -19,7 +19,9 @@ class AuthController extends Controller
     {
         $this->middleware('auth', [
             'only' => [
-                'profile'
+                'profile',
+                'profile_update',
+                'profile_change_password'
             ]
         ]);
     }
@@ -34,8 +36,102 @@ class AuthController extends Controller
         $user = Auth::user();
 
         return apiResponse(
-            (new UserResource($user)),
+            ($user),
             "Get auth profile success.",
+            true,
+            null, [],
+            200
+        );
+    }
+
+
+    /**
+     * Prifule - Update
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function profile_update(Request $request)
+    {
+        // 
+        $user = Auth::user();
+
+        // make validator
+        $rules = ['name' => 'required|string|min:3'];
+        if ($request->email != $user->email) $rules['email'] = 'required|string|unique:users';
+        if ($request->phone != $user->phone) $rules['phone'] = 'required|numeric|unique:users|min:12';
+        if ($request->signature != $user->signature) $rules['signature'] = 'required|string';
+        if ($request->identity_number != $user->identity_number) $rules['identity_number'] = 'required|string';
+        if ($request->identity_number_type != $user->identity_number_type) $rules['identity_number_type'] = 'required|string|in:NIK,NIS,SIM,Custom';
+        $validator = Validator::make($request->all(), $rules);
+
+        // validate fails
+        if ($validator->fails()) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $validator->errors(),
+            422
+        );
+
+        // update
+        $update = null;
+        DB::transaction(function () use ($user, $request, &$update) {
+            $update = $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'signature' => $request->signature,
+                'identity_number' => $request->identity_number,
+                'identity_number_type' => $request->identity_number_type
+            ]);
+        });
+        return apiResponse(
+            $user,
+            "Update user profile success.",
+            true,
+            null, [],
+            200
+        );
+    }
+
+    /**
+     * Profile - Change Password
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function profile_change_password(Request $request)
+    {
+        // 
+        $user = Auth::user();
+
+        // validator
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:5|max:16|confirmed'
+        ]);
+
+        // validate fails
+        if ($validator->fails()) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $validator->errors(),
+            422
+        );
+
+        // update
+        $update = null;
+        DB::transaction(function () use ($user, $request, &$update) {
+            $update = $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+        });
+        return apiResponse(
+            $user,
+            "Change user password success.",
             true,
             null, [],
             200
@@ -113,7 +209,7 @@ class AuthController extends Controller
             'username' => 'required|string|unique:users|min:5|max:13',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:5|max:16|confirmed',
-            'phone' => 'required|numeric|unique:user_detail|min:12',
+            'phone' => 'required|numeric|min:8|max:12|unique:user_detail|phone_number',
         ]);
 
         // validate fails
@@ -135,13 +231,7 @@ class AuthController extends Controller
                 'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-            ]);
-
-            // make detail user
-            $store->detail()->create([
-                'phone' => $request->phone,
-                'roles' => 'Asesi',
-                'is_verified' => false
+                'phone' => $request->phone
             ]);
         });
 

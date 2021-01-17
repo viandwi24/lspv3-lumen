@@ -19,20 +19,14 @@ class SchemaController extends Controller
     public function index()
     {
         // 
-        $eloquent = Schema::query();
+        $eloquent = Schema::with('categories');
         $response = (new DataTable)
+            ->addColumn('category', function (Schema $schema) {
+                return implode(', ', $schema->categories->pluck('name')->toArray());
+            })
             ->of($eloquent)
             ->make();
         return $response;
-
-        $data = apiDataTablesResponse(
-            $eloquent
-        );
-        return apiResponse(
-            $data,
-            'get data success.',
-            true
-        );
     }
 
     /**
@@ -82,7 +76,7 @@ class SchemaController extends Controller
      */
     public function show($id)
     {
-        $schema = Schema::with('competency_units', 'competency_units.work_elements', 'competency_units.work_elements.job_criterias')->findOrFail($id);
+        $schema = Schema::with('categories', 'competency_units', 'competency_units.work_elements', 'competency_units.work_elements.job_criterias')->findOrFail($id);
         return apiResponse(
             $schema,
             'get data success.',
@@ -99,12 +93,15 @@ class SchemaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // make validator
-        $validator = Validator::make($request->all(), ([
+        // 
+        $rules = [
             'title' => 'required|string|min:3|max:255',
             'code' => 'required|string|min:3|max:255',
             'description' => 'required|string|min:3',
-        ]));
+        ];
+
+        // make validator
+        $validator = Validator::make($request->all(), $rules);
 
         // validate fails
         if ($validator->fails()) return apiResponse(
@@ -119,10 +116,15 @@ class SchemaController extends Controller
         // 
         $schema = Schema::findOrFail($id);
 
+
         // 
         $update = null;
         DB::transaction(function () use ($request, $schema, &$update) {
             $update = $schema->update($request->only('title', 'code', 'description'));
+            if ($request->has('categories') && is_array($request->categories))
+            {
+                $schema->categories()->sync($request->categories);
+            }
         });
 
         // 

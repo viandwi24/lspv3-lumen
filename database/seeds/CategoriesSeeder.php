@@ -12,10 +12,18 @@ class CategoriesSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0; $i < 30; $i++) { 
+        Category::create([
+            'name' => "Teknik Komputer Jaringan",
+            'description' => "Kelompok Keahlian Komputer dan Jaringan"
+        ]);
+        Category::create([
+            'name' => "Keahlian Dasar",
+            'description' => "Kelompok Keahlian dasar"
+        ]);
+        for ($i=0; $i < 200; $i++) { 
             Category::create([
-                'name' => "Example Category {$i}",
-                'description' => "{$i} This is a description of example category."
+                'name' => "example category {$i}",
+                'description' => "example category description {$i}"
             ]);
         }
     }

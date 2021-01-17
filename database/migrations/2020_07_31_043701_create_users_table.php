@@ -18,7 +18,11 @@ class CreateUsersTable extends Migration
             $table->string('name', 40);
             $table->string('username', 15)->unique();
             $table->string('email', 40)->unique();
+            $table->string('phone', 16)->unique()->nullable();
             $table->string('password', 128);
+            $table->longText('signature')->nullable();
+            $table->string('identity_number', 225)->nullable();
+            $table->enum('identity_number_type', ['NIK', 'NIS', 'SIM', 'Custom'])->default('Custom');
             $table->enum('status', ['Active','Inactive','Suspended'])->default('Active');
             $table->enum('role', ['Admin','Superadmin','Assessor', 'Accession'])->default('Accession');
             $table->dateTime('last_login')->nullable();

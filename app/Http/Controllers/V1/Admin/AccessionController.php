@@ -49,6 +49,7 @@ class AccessionController extends Controller
             'name' => 'required|string|min:3|max:30',
             'username' => 'required|string|min:3|max:30|unique:users',
             'email' => 'required|string|min:3|max:30|email|unique:users',
+            'status' => 'required|string|in:Active,Inactive,Suspended',
             'password' => 'required|string|min:5|max:30'
         ]));
 
@@ -69,10 +70,9 @@ class AccessionController extends Controller
                 array_merge(
                     [
                         'role' => 'Accession',
-                        'status' => 'Active',
                         'password' => Hash::make($request->password)
                     ],
-                    $request->only('name', 'username', 'email')
+                    $request->only('name', 'username', 'email', 'status')
                 )
             );
         });
@@ -129,6 +129,11 @@ class AccessionController extends Controller
         {
             $rules['username'] = 'required|string|min:3|max:30|unique:users';
             $mergedData['username'] = $request->username;
+        }
+        if ($accession->status != $request->status)
+        {
+            $rules['status'] = 'required|string|in:Active,Inactive,Suspended';
+            $mergedData['status'] = $request->status;
         }
 
         // make validator

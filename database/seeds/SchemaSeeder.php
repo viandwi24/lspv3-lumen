@@ -18,6 +18,7 @@ class SchemaSeeder extends Seeder
             'code' => 'awoekawkeokaweo',
             'status' => 'active'
         ]);
+        $skema->categories()->attach([1,2]);
 
         for ($i=1; $i < 4; $i++)
         {

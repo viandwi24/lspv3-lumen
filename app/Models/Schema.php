@@ -29,4 +29,9 @@ class Schema extends Model
     {
         return $this->belongsToMany(Schedule::class, 'schema_schedules');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'schema_categories');
+    }
 }

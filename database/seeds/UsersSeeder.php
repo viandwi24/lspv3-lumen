@@ -18,6 +18,7 @@ class UsersSeeder extends Seeder
             'email'     => 'viandwicyber@gmail.com',
             'username'  => 'viandwi24',
             'password'  => Hash::make('password'),
+            'phone'     => '62895337617550',
             'role'      => 'Accession',
             'status'    => 'Active'
         ]);
@@ -26,6 +27,7 @@ class UsersSeeder extends Seeder
             'email'     => 'assessor1@gmail.com',
             'username'  => 'assessor1',
             'password'  => Hash::make('password'),
+            'phone'     => '62895337617551',
             'role'      => 'Assessor',
             'status'    => 'Active'
         ]);
@@ -34,6 +36,7 @@ class UsersSeeder extends Seeder
             'email'     => 'assessor2@gmail.com',
             'username'  => 'assessor2',
             'password'  => Hash::make('password'),
+            'phone'     => '62895337617552',
             'role'      => 'Assessor',
             'status'    => 'Active'
         ]);
@@ -42,6 +45,7 @@ class UsersSeeder extends Seeder
             'email'     => 'admin@mail.com',
             'username'  => 'admin',
             'password'  => Hash::make('password'),
+            'phone'     => '62895337617553',
             'role'      => 'Admin',
             'status'    => 'Active'
         ]);

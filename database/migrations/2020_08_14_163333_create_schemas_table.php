@@ -18,7 +18,7 @@ class CreateSchemasTable extends Migration
             $table->string('title', 255);
             $table->longText('description');
             $table->string('code', 100);
-            $table->enum('status', ['active', 'nonactive'])->default('active');
+            $table->enum('status', ['Active', 'Nonactive'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
         });

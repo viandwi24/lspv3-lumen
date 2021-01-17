@@ -19,7 +19,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'status', 
+        'name', 'username', 'email', 'password', 'phone', 'status', 'signature', 'identity_number', 'identity_number_type',
         'last_login', 'role'
     ];
 
@@ -66,5 +66,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function schemas()
     {
         return $this->belongsToMany(Schema::class);
+    }
+
+
+    public function files()
+    {
+        return $this->belongsToMany(File::class, 'file_users');
     }
 }

@@ -31,7 +31,11 @@ class CorsMiddleware
         $response = $next($request);
         foreach($headers as $key => $value)
         {
-            $response->header($key, $value);
+            try {
+                $response->header($key, $value);
+            } catch (\Throwable $th) {
+                header("{$key}: {$value}");
+            }
         }
 
         return $response;
