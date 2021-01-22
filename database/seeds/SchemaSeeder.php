@@ -12,17 +12,17 @@ class SchemaSeeder extends Seeder
      */
     public function run()
     {
-        $skema = Schema::create([
+        $schema = Schema::create([
             'title' => 'TKJ CLUSTER 1',
             'description' => 'hehehe cluster 1',
             'code' => 'awoekawkeokaweo',
             'status' => 'active'
         ]);
-        $skema->categories()->attach([1,2]);
+        $schema->categories()->attach([1,2]);
 
         for ($i=1; $i < 4; $i++)
         {
-            $units = $skema->competency_units()->create([
+            $units = $schema->competency_units()->create([
                 'code' => "00{$i}",
                 'title' => "Unit{$i}"
             ]);
@@ -38,5 +38,18 @@ class SchemaSeeder extends Seeder
                 ]);
             }
         }
+
+        $schema->files()->create([
+            'name' => 'Rapot SMK Semester 1 - 5',
+            'format' => ['.pdf']
+        ]);
+        $schema->files()->create([
+            'name' => 'KTP',
+            'format' => ['.pdf']
+        ]);
+        $schema->files()->create([
+            'name' => 'Kartu Keluarga',
+            'format' => ['.pdf']
+        ]);
     }
 }

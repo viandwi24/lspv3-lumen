@@ -34,4 +34,9 @@ class Schema extends Model
     {
         return $this->belongsToMany(Category::class, 'schema_categories');
     }
+
+    public function files()
+    {
+        return $this->hasMany(SchemaFile::class);
+    }
 }
