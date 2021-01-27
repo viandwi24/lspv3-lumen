@@ -14,3 +14,5 @@ $router->group(['prefix' => '/files'], function() use ($router) {
     $router->get('/{id}', ['as' => 'files.download', 'uses' => 'FileController@download']);
     $router->delete('/{id}', ['as' => 'files.destroy', 'uses' => 'FileController@destroy']);
 });
+
+$router->post('/registration-schemas', ['as' => 'registration.schema', 'uses' => 'RegistrationSchemaController@index']);

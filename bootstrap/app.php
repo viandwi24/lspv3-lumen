@@ -65,6 +65,7 @@ $app->instance('path.public', app()->basePath() . DIRECTORY_SEPARATOR . 'public'
 
 $app->configure('app');
 $app->configure('datatables');
+$app->configure('filesystems');
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,7 @@ $app->routeMiddleware([
 
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Database\Eloquent\LegacyFactoryServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
